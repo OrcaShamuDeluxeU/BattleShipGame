@@ -22,8 +22,6 @@ public class Ship {
 		int iterate = 0;
 		
 		for (int[] num : Mycoordinates) {
-			System.out.println(x+" "+y);
-			System.out.println(num[0]+" "+num[1]);
 	        if (num[0] == x && num[1] == y) {
 	        	System.out.println("You hit "+Myname+" Ouch!");
 	        	Mycoordinates.remove(iterate);

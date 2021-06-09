@@ -1,57 +1,36 @@
 package Game;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+import java.util.Scanner;
 public class Player {
-	static ArrayList<int[]> Mycoordinatess = new ArrayList<int[]>();
+	static Hashtable<int[], Boolean> Mycoordinatess = new Hashtable<int[], Boolean>();
 	int myGuesses = 0;
+	Ship Cruiser = new Ship();
+	Ship Destroyer = new Ship();
+	Ship Submarine = new Ship();
+	Ship Battleship = new Ship();
+	Ship Aircraftcarrier = new Ship();
 	public static void addCoords(Ship Ship) {
 		for (int[] num : Ship.Mycoordinates) {
-			Mycoordinatess.add(num);
+			Mycoordinatess.put(num,true);
 		}
 	}
 	public static Boolean inbounds(int x, int y, int Turn, int size) {
-		if (Turn == 1 && x < 10) { // checks vertical then confirms x
+		if (Turn == 1 && x < 10 && y + size-1 < 10 ) { // checks vertical then confirms x
 			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
 				//also to  make sure y is in bounds
 				int[] guess_coords = {x,y+i};
-				//sets the current coordinations
-				if (y+i>10) {
-					//Checks for overlap with pre-exisitng coordinations
-					//with the new ones
-					for (int[] num : Mycoordinatess) {
-						if (Arrays.equals(num,guess_coords)) {
-							//overlap
-							return false;
-						}
-					}
-					//ending this part of the night mare
-				}
-				else {
-					//y is out of bounds
+				if (Mycoordinatess.get(guess_coords)!=null) {
 					return false;
 				}
 			}
 			//passed all everything
 			return true;
 		}
-		if (Turn == 0 && y < 10) { // checks vertical then confirms y
+		if (Turn == 0 && y < 10 && x + size-1 < 10 ) { // checks vertical then confirms x
 			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
 				//also to  make sure y is in bounds
 				int[] guess_coords = {x+i,y};
-				//sets the current coordinations
-				if (x+i>10) {
-					//Checks for overlap with pre-exisitng coordinations
-					//with the new ones
-					for (int[] num : Mycoordinatess) {
-						if (Arrays.equals(num,guess_coords)) {
-							//overlap
-							return false;
-						}
-					}
-					//ending this part of the night mare
-				}
-				else {
-					//x is out of bounds
+				if (Mycoordinatess.get(guess_coords)!=null) {
 					return false;
 				}
 			}
@@ -60,14 +39,26 @@ public class Player {
 		}
 		return false;//failed x or y quick check
 	}
-	public static int[] getCoords(int iterator) {
-		int[][] x = {{4,3,1},{3,2,1},{9,8,1},{6,5,0},{7,8,0}};
-		return x[iterator];
+	public static int[] getCoords() {
+		Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+	    System.out.println("Enter an X coordinate");
+	    int x = myObj.nextInt(); 
+	    System.out.println("Enter an Y coordinate");
+	    int y = myObj.nextInt(); 
+	    System.out.println("Enter 1 for Vertical or 0 for Horizontal for the ship");
+	    int turn = myObj.nextInt();
+	    //int turn = 0;
+	    //if (turnstr == "Vertical") {
+	    	//turn = 1;
+	    //}
+	    int[] returnval = {x,y,turn};
+	    return returnval;
+	    
 	}
-	public static int[] checkCoords(int iterator, int size) {
+	public static int[] checkCoords(int size) {
 		int[] x; // not in use yet, will mess up my testing.
 		while(true){
-			x = getCoords(iterator);
+			x = getCoords();
 			if (inbounds(x[0],x[1],x[2],size)) {
 				break;
 			}
@@ -75,36 +66,62 @@ public class Player {
 		}
 		return x;
 	}
-  	public void setupMyship() {
-		Ship Cruiser = new Ship();
-		int[] Coords = getCoords(0);
+	public void setupMyships() {
+		int[] Coords = checkCoords(2);
 		Cruiser.setupShip(2,Coords[0],Coords[1],Coords[2],"Cruiser");
 		addCoords(Cruiser);
-		Ship Destroyer = new Ship();
-		Coords = getCoords(1);
+		Coords = checkCoords(3);
 		Destroyer.setupShip(3,Coords[0],Coords[1],Coords[2],"Destroyer");
 		addCoords(Destroyer);
-		Ship Submarine = new Ship();
-		Coords = getCoords(2);
+		Coords = checkCoords(3);
 		Submarine.setupShip(3,Coords[0],Coords[1],Coords[2],"Submarine");
 		addCoords(Submarine);
-		Ship Battleship = new Ship();
-		Coords = getCoords(3);
+		Coords = checkCoords(4);
 		Battleship.setupShip(4,Coords[0],Coords[1],Coords[2],"Battleship");
 		addCoords(Battleship);
-		Ship Aircraftcarrier = new Ship();
-		Coords = getCoords(4);
+		Coords = checkCoords(5);
 		Aircraftcarrier.setupShip(5,Coords[0],Coords[1],Coords[2],"Aircraftcarrier");
 		addCoords(Aircraftcarrier);
-	} 
-	public int[] guess(int I) {
+	}
+  	public int[] guess(int I) {
+		//not in use
 		int[][] x= {{},{},{},{},{},{},{}};
 		myGuesses ++;
 		return x[I];
 	}
-	public void printcoords() {
-		for (int[] num : Mycoordinatess) {
-			System.out.println(num[0]+","+num[1]);
+  	public Boolean allShipssunk() {
+		if (Cruiser.Mycoordinates.isEmpty()&&Destroyer.Mycoordinates.isEmpty()&&Submarine.Mycoordinates.isEmpty()&&Battleship.Mycoordinates.isEmpty()&&Aircraftcarrier.Mycoordinates.isEmpty()) {
+			return true;
 		}
+  		return false;
 	}
+  	public void broadcastHit(int x, int y) {
+  		Cruiser.hit(x,y);
+  		Destroyer.hit(x,y);
+  		Submarine.hit(x,y);
+  		Battleship.hit(x,y);
+  		Aircraftcarrier.hit(x,y);
+  	}
+  	public void showvals() {
+  		System.out.println("Cruiser Coords");
+  		for (int[] num : Cruiser.Mycoordinates) {
+  			System.out.println(num[0]+","+num[1]);
+  		}
+  		System.out.println("Destroyer Coords");
+  		for (int[] num : Destroyer.Mycoordinates) {
+  			System.out.println(num[0]+","+num[1]);
+  		}
+  		System.out.println("Submarine Coords");
+  		for (int[] num : Submarine.Mycoordinates) {
+  			System.out.println(num[0]+","+num[1]);
+  		}
+  		System.out.println("Battleship Coords");
+  		for (int[] num : Battleship.Mycoordinates) {
+  			System.out.println(num[0]+","+num[1]);
+  		}
+  		System.out.println("Aircraftcarrier Coords");
+  		for (int[] num : Aircraftcarrier.Mycoordinates) {
+  			System.out.println(num[0]+","+num[1]);
+  		}
+  	}
 }
