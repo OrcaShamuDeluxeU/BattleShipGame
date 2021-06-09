@@ -1,6 +1,8 @@
 package Game;
 
 public class GameLauncher {
-	// Add main method here.
-
+	public static void main(String[] args) {
+		ShipGame myGame = new ShipGame();
+		myGame.run();
+	}
 }
