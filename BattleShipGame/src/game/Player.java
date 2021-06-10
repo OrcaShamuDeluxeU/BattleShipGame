@@ -1,49 +1,45 @@
-package Game;
+package game;
 import java.util.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class Player {
-	static ArrayList<String> Mycoordinatess = new ArrayList<String>();
-	int[][] allguesses = {{0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0},
-						  {0,0,0,0,0,0,0,0,0,0}};
-	int myGuesses = 0;
-	Ship Cruiser = new Ship();
-	Ship Destroyer = new Ship();
-	Ship Submarine = new Ship();
-	Ship Battleship = new Ship();
-	Ship Aircraftcarrier = new Ship();
-	public static void addCoords(Ship Ship) {
+	static ArrayList<String> mycoordinates = new ArrayList<String>(); // This holds string 
+	//of the coordinates of all the ships. so {4,4} would be "4 4"
+	int amountofmyGuesses = 0;
+	Ship cruiser = new Ship();
+	Ship destroyer = new Ship();
+	Ship submarine = new Ship();
+	Ship battleship = new Ship();
+	Ship aircraftcarrier = new Ship();
+	static int board_size;
+	int[][] allguesses = new int[board_size][board_size];
+	public Player(int boardsize) {
+		board_size = boardsize;
+	}
+	public static void addCoordinates(Ship Ship) {
 		for (int[] num : Ship.Mycoordinates) {
 			String x = String.valueOf(num[0]);
 			String y = String.valueOf(num[1]);
-			Mycoordinatess.add(x+""+y);
+			mycoordinates.add(x+""+y);
 		}
 	}
 	public static Boolean inbounds(int x, int y, int Turn, int size) {
-		if (Turn == 1 && x < 10 && y + size-1 < 10 ) { // checks vertical then confirms x
+		if (Turn == 1 && x < board_size && y + size-1 < board_size ) { // checks vertical then confirms x
 			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
 				String strx = String.valueOf(x);
 				String stry = String.valueOf(y+i);
-				if (Mycoordinatess.contains(strx+""+stry)) {
+				if (mycoordinates.contains(strx+""+stry)) {
 					return false;
 				}
 			}
 			//passed all everything
 			return true;
 		}
-		if (Turn == 0 && y < 10 && x + size-1 < 10 ) { // checks vertical then confirms x
+		if (Turn == 0 && y < board_size && x + size-1 < board_size ) { // checks vertical then confirms x
 			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
 				String strx = String.valueOf(x);
 				String stry = String.valueOf(y+i);
-				if (Mycoordinatess.contains(strx+""+stry)) {
+				if (mycoordinates.contains(strx+""+stry)) {
 					return false;
 				}
 			}
@@ -82,20 +78,20 @@ public class Player {
 	}
 	public void setupMyships() {
 		int[] Coords = checkCoords(2,"Cruiser");
-		Cruiser.setupShip(2,Coords[0],Coords[1],Coords[2],"Cruiser");
-		addCoords(Cruiser);
+		cruiser.setupShip(2,Coords[0],Coords[1],Coords[2],"Cruiser");
+		addCoordinates(cruiser);
 		Coords = checkCoords(3,"Destroyer");
-		Destroyer.setupShip(3,Coords[0],Coords[1],Coords[2],"Destroyer");
-		addCoords(Destroyer);
+		destroyer.setupShip(3,Coords[0],Coords[1],Coords[2],"Destroyer");
+		addCoordinates(destroyer);
 		Coords = checkCoords(3,"Submarine");
-		Submarine.setupShip(3,Coords[0],Coords[1],Coords[2],"Submarine");
-		addCoords(Submarine);
+		submarine.setupShip(3,Coords[0],Coords[1],Coords[2],"Submarine");
+		addCoordinates(submarine);
 		Coords = checkCoords(4,"Battleship");
-		Battleship.setupShip(4,Coords[0],Coords[1],Coords[2],"Battleship");
-		addCoords(Battleship);
+		battleship.setupShip(4,Coords[0],Coords[1],Coords[2],"Battleship");
+		addCoordinates(battleship);
 		Coords = checkCoords(5,"Aircraftcarrier");
-		Aircraftcarrier.setupShip(5,Coords[0],Coords[1],Coords[2],"Aircraftcarrier");
-		addCoords(Aircraftcarrier);
+		aircraftcarrier.setupShip(5,Coords[0],Coords[1],Coords[2],"Aircraftcarrier");
+		addCoordinates(aircraftcarrier);
 	}
   	public int[] guess() {
   		Scanner guess = new Scanner(System.in);
@@ -105,7 +101,7 @@ public class Player {
   			x = guess.nextInt();
 	    	System.out.println("Enter an Y coordinate for your guess");
 	    	y = guess.nextInt();
-	    	if (x < 10 && y < 10) {
+	    	if (x < board_size && y < board_size) {
 	    		break;
 	    	}
 	    	else {
@@ -121,41 +117,41 @@ public class Player {
   		}
   		allguesses[x][y] = 1;
 	    int[] return_guess = {x,y};
-		myGuesses ++;
+	    amountofmyGuesses ++;
 		return return_guess;
 	}
   	public Boolean allShipssunk() {
-		if (Cruiser.Mycoordinates.isEmpty()&&Destroyer.Mycoordinates.isEmpty()&&Submarine.Mycoordinates.isEmpty()&&Battleship.Mycoordinates.isEmpty()&&Aircraftcarrier.Mycoordinates.isEmpty()) {
+		if (cruiser.Mycoordinates.isEmpty()&&destroyer.Mycoordinates.isEmpty()&&submarine.Mycoordinates.isEmpty()&&battleship.Mycoordinates.isEmpty()&&aircraftcarrier.Mycoordinates.isEmpty()) {
 			return true;
 		}
   		return false;
 	}
   	public void broadcastHit(int x, int y) {
-  		Cruiser.hit(x,y);
-  		Destroyer.hit(x,y);
-  		Submarine.hit(x,y);
-  		Battleship.hit(x,y);
-  		Aircraftcarrier.hit(x,y);
+  		cruiser.hit(x,y);
+  		destroyer.hit(x,y);
+  		submarine.hit(x,y);
+  		battleship.hit(x,y);
+  		aircraftcarrier.hit(x,y);
   	}
-  	public void showvals() {
+  	public void showvals() { // tester, for later
   		System.out.println("Cruiser Coords");
-  		for (int[] num : Cruiser.Mycoordinates) {
+  		for (int[] num : cruiser.Mycoordinates) {
   			System.out.println(num[0]+","+num[1]);
   		}
   		System.out.println("Destroyer Coords");
-  		for (int[] num : Destroyer.Mycoordinates) {
+  		for (int[] num : destroyer.Mycoordinates) {
   			System.out.println(num[0]+","+num[1]);
   		}
   		System.out.println("Submarine Coords");
-  		for (int[] num : Submarine.Mycoordinates) {
+  		for (int[] num : submarine.Mycoordinates) {
   			System.out.println(num[0]+","+num[1]);
   		}
   		System.out.println("Battleship Coords");
-  		for (int[] num : Battleship.Mycoordinates) {
+  		for (int[] num : battleship.Mycoordinates) {
   			System.out.println(num[0]+","+num[1]);
   		}
   		System.out.println("Aircraftcarrier Coords");
-  		for (int[] num : Aircraftcarrier.Mycoordinates) {
+  		for (int[] num : aircraftcarrier.Mycoordinates) {
   			System.out.println(num[0]+","+num[1]);
   		}
   	}

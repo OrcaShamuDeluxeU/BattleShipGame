@@ -1,4 +1,4 @@
-package Game;
+package game;
 import java.util.ArrayList;
 public class Ship {
 	ArrayList<int[]> Mycoordinates = new ArrayList<int[]>();
