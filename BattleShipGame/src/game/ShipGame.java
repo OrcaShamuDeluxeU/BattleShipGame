@@ -1,8 +1,9 @@
 package game;
 
 public class ShipGame {
-	static Player player1 = new Player(10);
-	static Player player2 = new Player(10);
+	static Player player1 = new Player();
+	static Player player2 = new Player();
+	
 	public static void setup() {
 		System.out.println("Setup your ships, Player 1");
 		player1.setupMyships();
