@@ -4,14 +4,10 @@ import java.util.Scanner;
 import java.util.ArrayList;
 public class Player {
 	static ArrayList<String> mycoordinates = new ArrayList<String>(); // This holds string 
-	//of the coordinates of all the ships. so {4,4} would be "4 4"
+	static String[] shipNames = {"Cruiser","Destroyer","Submarine","Battleship","Aircraftcarrier"};
+	static int[] shipSizes = {2,3,3,4,5};
 	int amountofmyGuesses = 0;
-	static Ship cruiser = new Ship();
-	static Ship destroyer = new Ship();
-	static Ship submarine = new Ship();
-	static Ship battleship = new Ship();
-	static Ship aircraftcarrier = new Ship();
-	static Ship[] myShips = {cruiser,destroyer,submarine,battleship,aircraftcarrier};
+	static ArrayList <Ship> myShips = new ArrayList<Ship>();;
 	static int boardSize = 10;
 	int[][] allguesses = new int[boardSize][boardSize];
 	public static void addCoordinates(Ship Ship) {
@@ -71,20 +67,12 @@ public class Player {
 	}
 	public void setupMyships() {
 		int[] Coords = checkCoords(2,"Cruiser");
-		cruiser.setupShip(2,Coords[0],Coords[1],Coords[2],"Cruiser");
-		addCoordinates(cruiser);
-		Coords = checkCoords(3,"Destroyer");
-		destroyer.setupShip(3,Coords[0],Coords[1],Coords[2],"Destroyer");
-		addCoordinates(destroyer);
-		Coords = checkCoords(3,"Submarine");
-		submarine.setupShip(3,Coords[0],Coords[1],Coords[2],"Submarine");
-		addCoordinates(submarine);
-		Coords = checkCoords(4,"Battleship");
-		battleship.setupShip(4,Coords[0],Coords[1],Coords[2],"Battleship");
-		addCoordinates(battleship);
-		Coords = checkCoords(5,"Aircraftcarrier");
-		aircraftcarrier.setupShip(5,Coords[0],Coords[1],Coords[2],"Aircraftcarrier");
-		addCoordinates(aircraftcarrier);
+		for (int i = 0; i > 5; i++) {
+			Coords = checkCoords(shipSizes[i],shipNames[i]);
+			Ship ship = new Ship();
+			ship.setupShip(3,Coords[0],Coords[1],Coords[2],shipNames[i]);
+			addCoordinates(ship);
+		}
 	}
   	public int[] guess() {
   		Scanner guess = new Scanner(System.in);
