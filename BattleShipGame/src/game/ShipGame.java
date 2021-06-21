@@ -3,13 +3,15 @@ package game;
 public class ShipGame {
 	static Player player1 = new Player();
 	static Player player2 = new Player();
-	
+	int[] Coords;
 	public static void setup() {
 		System.out.println("Setup your ships, Player 1");
 		player1.setupMyships();
 		System.out.println("Setup your ships, Player 2");
 		player2.setupMyships();
 	}
+
+	
 	public void run() {
 		String Current_player = "Player1";
 		while (true) {

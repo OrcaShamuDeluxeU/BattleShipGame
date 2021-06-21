@@ -1,15 +1,23 @@
 package game;
 import java.util.*;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class Player {
 	static ArrayList<String> mycoordinates = new ArrayList<String>(); // This holds string 
-	static String[] shipNames = {"Cruiser","Destroyer","Submarine","Battleship","Aircraftcarrier"};
-	static int[] shipSizes = {2,3,3,4,5};
+	static HashMap<String, Integer> shipAttributes = new HashMap<>();
+	//TODO DICTOINARY combine
 	int amountofmyGuesses = 0;
 	static ArrayList <Ship> myShips = new ArrayList<Ship>();;
 	static int boardSize = 10;
 	int[][] allguesses = new int[boardSize][boardSize];
+	public Player() {
+		shipAttributes.put("Cruiser",2);
+		shipAttributes.put("Destroyer",3);
+		shipAttributes.put("Submarine",3);
+		shipAttributes.put("Battleship",4);
+		shipAttributes.put("Aircraftcarrier",5);
+	}
 	public static void addCoordinates(Ship Ship) {
 		for (int[] num : Ship.Mycoordinates) {
 			String x = String.valueOf(num[0]);
@@ -18,21 +26,17 @@ public class Player {
 		}
 	}
 	public static Boolean inbounds(int x, int y, int Turn, int size) {
-		if (Turn == 1 && x < boardSize && y + size-1 < boardSize ) { // checks vertical then confirms x
+		if (Turn == 1 && x < boardSize && y + size-1 < boardSize || Turn == 1 && y < boardSize && x + size-1 < boardSize) { // checks vertical then confirms x
 			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
-				String strx = String.valueOf(x);
-				String stry = String.valueOf(y+i);
-				if (mycoordinates.contains(strx+""+stry)) {
-					return false;
+				String strx,stry;
+				if (Turn == 1) {
+					strx = String.valueOf(x);
+					stry = String.valueOf(y+i);
 				}
-			}
-			//passed all everything
-			return true;
-		}
-		if (Turn == 0 && y < boardSize && x + size-1 < boardSize ) { // checks vertical then confirms x
-			for (int i = 0; i < size-1; i++) { // loops to check if x y is in coords and 
-				String strx = String.valueOf(x);
-				String stry = String.valueOf(y+i);
+				else {
+					strx = String.valueOf(x+i);
+					stry = String.valueOf(y);
+				}
 				if (mycoordinates.contains(strx+""+stry)) {
 					return false;
 				}
@@ -54,8 +58,8 @@ public class Player {
 	    int[] returnval = {x,y,turn};
 	    return returnval;
 	}
-	public static int[] checkCoords(int size, String name) {
-		int[] x; // not in use yet, will mess up my testing.
+	public static int[] checkCoordinates(int size, String name) {
+		int[] x;
 		while(true){
 			x = getCoords(name);
 			if (inbounds(x[0],x[1],x[2],size)) {
@@ -66,11 +70,11 @@ public class Player {
 		return x;
 	}
 	public void setupMyships() {
-		int[] Coords = checkCoords(2,"Cruiser");
-		for (int i = 0; i > 5; i++) {
-			Coords = checkCoords(shipSizes[i],shipNames[i]);
-			Ship ship = new Ship();
-			ship.setupShip(3,Coords[0],Coords[1],Coords[2],shipNames[i]);
+		int[] Coords;
+		for (String name : shipAttributes.keySet())
+        {
+			Coords = checkCoordinates(shipAttributes.get(name),name);
+			Ship ship = new Ship(3,Coords[0],Coords[1],Coords[2],name);
 			addCoordinates(ship);
 		}
 	}
@@ -82,6 +86,9 @@ public class Player {
   			x = guess.nextInt();
 	    	System.out.println("Enter an Y coordinate for your guess");
 	    	y = guess.nextInt();
+	    	//
+	    	//
+	    	//
 	    	if (x < boardSize && y < boardSize) {
 	    		break;
 	    	}
@@ -94,7 +101,7 @@ public class Player {
 	    	else {
 	    		System.out.println("You already guesses here");
 	    	}
-	    	
+	    	//
   		}
   		allguesses[x][y] = 1;
 	    int[] return_guess = {x,y};
@@ -111,7 +118,7 @@ public class Player {
 	}
   	public void broadcastHit(int x, int y) {
   		for (Ship ship : myShips) {
-  			ship.hit(x,y);
+  			ship.getHit(x,y);
   		}
   	}
   	public void showvals() { // tester, for later
